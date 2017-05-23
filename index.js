@@ -1,10 +1,14 @@
-ServicesStatus = new Mongo.Collection('servicesStatus');
 if (Meteor.isServer) {
+  // Check ServicesStatus collection is exiting or not
+  try {
+    const exist = ServicesStatus.findOne({});
+  } catch (e) {
+    ServicesStatus = new Mongo.Collection('servicesStatus');
+  }
   var Api = new Restivus({
     useDefaultAuth: true,
     prettyJson: true
   });
-
   Api.addRoute('status', {
     post: function() {
       const public = Meteor.settings.public;

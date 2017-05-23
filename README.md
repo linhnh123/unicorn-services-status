@@ -13,3 +13,10 @@ npm install unicorn-services-status --save
 ```bash
 meteor add nimble:restivus
 ```
+
+# How to use:
+
+```bash
+import servicesStatus from 'unicorn-services-status';
+Meteor.startup(() => {});
+```
