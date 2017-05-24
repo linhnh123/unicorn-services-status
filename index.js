@@ -14,6 +14,7 @@ if (Meteor.isServer) {
       const public = Meteor.settings.public;
       const data = {
         name: public && public.name ? public.name : Meteor.absoluteUrl(),
+        url: Meteor.absoluteUrl(),
         type: 'HEALTH_CHECK',
         lastOnline: new Date(),
       };
@@ -23,11 +24,11 @@ if (Meteor.isServer) {
           ServicesStatus.remove({});
         }
         // Insert new data
-        ServicesStatus.insert(data);
-        return { status: 'OK', data: data };
+        const id = ServicesStatus.insert(data);
+        return { status: 'OK', id: id };
       } catch (e) {
-        data.message = 'Server is alive, but has an error in api';
-        return { status: 'FAILED', data: data };
+        const lastItem = ServicesStatus.findOne({}, {sort: {lastOnline: -1}, fields: {_id: 1}});
+        return lastItem ? { status: 'FAILED', id: lastItem._id } : { status: 'FAILED', data: data };
       }
     },
   });
